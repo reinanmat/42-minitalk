@@ -6,45 +6,64 @@
 /*   By: revieira <revieira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/12 16:10:14 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/02 18:50:29 by revieira         ###   ########.fr       */
+/*   Updated: 2023/01/04 16:50:51 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void    send_message(int pid, char *msg)
+void	error(char *s)
 {
-    int i;
-    int j;
-
-    i = 0;
-    while (msg[i])
-    {
-        j = 0;
-        while (j < 8)
-        {
-            if (msg[i] & (1 << j))
-                kill(pid, SIGUSR1);
-            else
-                kill(pid, SIGUSR2);
-            j++;
-            usleep(800);
-        }
-        i++;
-    }
+	ft_printf("%s\n", s);
+	exit(1);
 }
 
-
-int main(int argc, char **argv)
+void	send_message(int pid, char *msg)
 {
-    int pid;
+	int	i;
+    int len_msg;
+	int	bits_sent;
+	int	kill_ret;
 
-    if (argc != 3)
+	i = 0;
+    len_msg = ft_strlen(msg);
+	while (i < len_msg + 1)
+	{
+		bits_sent = 0;
+		while (bits_sent < 8)
+		{
+			if (msg[i] & (1 << bits_sent))
+				kill_ret = kill(pid, SIGUSR1);
+			else
+				kill_ret = kill(pid, SIGUSR2);
+			if (kill_ret == -1)
+				error("Error: invalid PID");
+			bits_sent++;
+			usleep(700);
+		}
+		i++;
+	}
+}
+
+void    signal_handler(int sig)
+{
+    if (sig == SIGUSR1)
+        ft_printf("Message sent successfully!\n");
+    else if (sig == SIGUSR2)
+        error("Unexpected error");
+    exit(0);
+}
+
+int	main(int argc, char **argv)
+{
+	if (argc != 3)
     {
-        ft_printf("Usage: ./client [server pid] [message]");
-        exit(0);
+		ft_printf("Error: invalid number of arguments\n");
+        error("usage: ./client [server pid] [message]");
     }
-    pid = ft_atoi(argv[1]);
-    send_message(pid, argv[2]);
-    return (0);
+    signal(SIGUSR1, signal_handler);
+    signal(SIGUSR2, signal_handler);
+	send_message(ft_atoi(argv[1]), argv[2]);
+    while (1)
+        pause();
 }
