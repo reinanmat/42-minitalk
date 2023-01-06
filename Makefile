@@ -6,7 +6,7 @@
 #    By: revieira <revieira@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/12 16:15:40 by revieira          #+#    #+#              #
-#    Updated: 2023/01/05 11:04:52 by revieira         ###   ########.fr        #
+#    Updated: 2023/01/05 15:26:19 by revieira         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ OBJS_CLIENT_BONUS = $(PATH_OBJS_BONUS)client_bonus.o
 LIBFT 		    = -L $(PATH_LIBFT) -lft
 INCLUDES	    = -I $(PATH_INCS) -I $(PATH_LIBFT)/includes/
 INCLUDES_BONUS  = -I $(PATH_INCS_BONUS) -I $(PATH_LIBFT)/includes/
-CFLAGS 		    = -Wall -Wextra -Werror
+CFLAGS 		    = -Wall -Wextra -Werror -g3
 
 all: $(NAME)
 

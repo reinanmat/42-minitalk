@@ -1,19 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_str_is_num.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: revieira <revieira@student.42.fr>          +#+  +:+       +#+        */
+/*   By: revieira <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/12 16:11:39 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/02 13:44:54 by revieira         ###   ########.fr       */
+/*   Created: 2023/01/05 17:55:03 by revieira          #+#    #+#             */
+/*   Updated: 2023/01/06 13:50:00 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
-
 #include "libft.h"
-#include <signal.h>
 
-#endif
+int	ft_str_is_num(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}

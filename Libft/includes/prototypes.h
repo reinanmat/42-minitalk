@@ -6,7 +6,7 @@
 /*   By: revieira <revieira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 10:35:45 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/02 14:21:31 by revieira         ###   ########.fr       */
+/*   Updated: 2023/01/06 13:49:48 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int		ft_tolower(int c);
 int		ft_toupper(int c);
 
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_strcmp(const char *s1, const char *s2);
 size_t	ft_strlen(const char *s);
 size_t	ft_strlcpy(char *dest, const char *src, size_t size);
 size_t	ft_strlcat(char *dest, const char *src, size_t size);
@@ -84,5 +85,9 @@ int		ft_print_str(char *str);
 int		ft_print_point(unsigned long long n);
 int		ft_putnbr_base(long long n, char *base);
 int		ft_putnbr_pos(unsigned long long n, char *base);
+
+//ADD_FUNCTIONS
+void	ft_exit_program(char *msg, int exit_code);
+int		ft_str_is_num(char *str);
 
 #endif

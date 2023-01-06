@@ -1,37 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: revieira <revieira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/09 17:44:27 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/04 16:56:09 by revieira         ###   ########.fr       */
+/*   Updated: 2023/01/05 17:31:42 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minitalk.h"
+#include "minitalk_bonus.h"
 
-char	*char_add(char *str, char c)
+char	*add_char_in_str(char *str, char c)
 {
-	int		len;
 	char	*new_str;
+	int		i;
 
+    i = -1;
 	if (!str)
 		str = ft_strdup("");
 	new_str = ft_calloc(1, ft_strlen(str) + 2);
 	if (!new_str)
-		exit(1);
-	len = ft_strlen(str);
-	ft_strlcpy(new_str, str, len + 1);
-	new_str[len] = c;
-	if (c == '\0')
-		ft_printf("%s\n", new_str);
+		ft_exit_program("Error: malloc failed", 1);
+    while (str[++i])
+        new_str[i] = str[i];
+    new_str[i] = c;
+    new_str[i + 1] = '\0';
 	free(str);
 	return (new_str);
 }
 
-void	handler(int sig, siginfo_t *info, void *other)
+char    *print_msg(char *msg)
+{
+    ft_printf("%s\n", msg);
+    if (ft_strncmp(msg, "exit", 4) == 0)
+    {
+        free(msg);
+        ft_exit_program("Server stopped", 0);
+    }
+    free(msg);
+    return (NULL);
+}
+
+void	signal_handler(int sig, siginfo_t *info, void *other)
 {
 	static int	i;
 	static char	c;
@@ -48,19 +60,15 @@ void	handler(int sig, siginfo_t *info, void *other)
 	{
 		if (c == 0)
 		{
-			ft_printf("%s\n", msg);
+			msg = print_msg(msg);
 			kill(pid, SIGUSR1);
-			if (ft_strncmp(msg, "exit", ft_strlen(msg)) == 0)
-			{
-				free(msg);
-				exit(0);
-			}
-			free(msg);
-			msg = NULL;
-			pid = 0;
+            pid = 0;
 		}
 		else
-			msg = char_add(msg, c);
+        {
+			msg = add_char_in_str(msg, c);
+            kill(pid, SIGUSR2);
+        }    
 		i = 0;
 		c = 0;
 	}
@@ -71,12 +79,11 @@ void	inicialize_sigaction(struct sigaction *sa)
 	sigset_t	sigset;
 
 	sigemptyset(&sigset);
-	sigaddset(&sigset, SIGUSR1);
-	sigaddset(&sigset, SIGUSR2);
+	//sigaddset(&sigset, SIGUSR1);
+	//sigaddset(&sigset, SIGUSR2);
 	sa->sa_mask = sigset;
 	sa->sa_flags = SA_SIGINFO;
-	sa->sa_sigaction = handler;
-	sigemptyset(&sa->sa_mask);
+	sa->sa_sigaction = signal_handler;
 }
 
 int	main(void)
