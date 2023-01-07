@@ -6,7 +6,7 @@
 /*   By: revieira <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 18:00:50 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/06 19:27:09 by revieira         ###   ########.fr       */
+/*   Updated: 2023/01/07 12:42:18 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,16 @@ char	*print_msg(int pid, char *msg)
 			free(msg);
 		ft_exit_program("Error: could not send signal to client", 1);
 	}
-	if (!ft_strcmp(msg, "exit"))
-	{
-		free(msg);
-		ft_exit_program("Server exiting\n", 0);
-	}
 	free(msg);
 	return (NULL);
 }
 
 void	signal_handler(int sig, siginfo_t *info, void *context)
 {
-	static int	bits_received = 0;
-	static int	pid = 0;
-	static char	c = 0;
-	static char	*msg = NULL;
+	static int	bits_received;
+	static int	pid;
+	static char	c;
+	static char	*msg;
 
 	context = NULL;
 	if (!pid)
@@ -64,7 +59,7 @@ void	signal_handler(int sig, siginfo_t *info, void *context)
 	bits_received++;
 	if (kill(pid, SIGUSR1) == -1)
 		ft_exit_program("Error: could not send signal to client\n", 1);
-	if (bits_received == 8)
+	if (bits_received == 7)
 	{
 		if (c == 0)
 		{

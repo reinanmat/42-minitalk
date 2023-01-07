@@ -3,78 +3,87 @@
 /*                                                        :::      ::::::::   */
 /*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: revieira <revieira@student.42.fr>          +#+  +:+       +#+        */
+/*   By: revieira <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/12 16:10:14 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/05 17:50:49 by revieira         ###   ########.fr       */
+/*   Created: 2023/01/05 17:52:17 by revieira          #+#    #+#             */
+/*   Updated: 2023/01/07 13:08:34 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk_bonus.h"
 
-int	check_pid(char *pid)
+int	send_bit(int pid, char c, int bits_left, char *msg)
 {
-	int	i;
-
-	i = 0;
-	while (pid[i])
+	if (c & (1 << bits_left))
 	{
-		if (!ft_isdigit(pid[i]))
-			return (0);
-		i++;
+		if (kill(pid, SIGUSR2) == -1)
+		{
+			if (msg)
+				free(msg);
+			ft_exit_program("Error: could not send signal to server", 1);
+		}
+	}
+	else
+	{
+		if (kill(pid, SIGUSR1) == -1)
+		{
+			if (!msg)
+				free(msg);
+			ft_exit_program("Error: could not send signal to server", 1);
+		}
 	}
 	return (1);
 }
 
-void	send_msg(int pid, char *msg)
+int	send_msg(int pid, char *msg)
 {
-	int	i;
-	int	msg_len;
-	int	bits_sent;
-	int	kill_ret;
+	static int	i;
+	static int	len_msg;
+	static int	bits_left;
+	static int	saved_pid;
+	static char	*s_msg;
 
-	i = 0;
-	msg_len = ft_strlen(msg);
-	while (i < msg_len + 1)
+	if (!saved_pid)
+		saved_pid = pid;
+	if (!s_msg)
+		s_msg = ft_strdup(msg);
+	if (!len_msg)
+		len_msg = ft_strlen(msg);
+	if (bits_left == 8)
 	{
-		bits_sent = 0;
-		while (bits_sent < 8)
-		{
-			if (msg[i] & (1 << bits_sent))
-				kill_ret = kill(pid, SIGUSR1);
-			else
-				kill_ret = kill(pid, SIGUSR2);
-			if (kill_ret == -1)
-				ft_exit_program("Error: invalid PID", 1);
-			bits_sent++;
-			usleep(900);
-		}
+		bits_left = 0;
 		i++;
 	}
+	if (i < len_msg + 1 && bits_left < 8)
+		bits_left += send_bit(saved_pid, s_msg[i], bits_left, s_msg);
+	else
+	{
+		free(s_msg);
+		return (1);
+	}
+	return (0);
 }
 
-void	signal_received(int sig)
+void	handler(int sig)
 {
 	if (sig == SIGUSR1)
-		ft_exit_program("Message received", 0);
+		send_msg(0, 0);
 	else if (sig == SIGUSR2)
-		ft_exit_program("Unexpected error", 1);
-	exit(0);
+		ft_exit_program("Message sent successfully", 0);
 }
 
 int	main(int argc, char **argv)
 {
-	if (argc != 3)
+	if (argc != 3 || !ft_str_is(argv[1], ft_isdigit))
 	{
-		ft_printf("Error: invalid number of arguments\n");
+		ft_printf("Error: invalid arguments\n");
 		ft_exit_program("Usage: ./client [server pid] [message]", 1);
 	}
-	if (!check_pid(argv[1]))
-		ft_exit_program("Error: invalid PID", 1);
-	signal(SIGUSR1, signal_received);
-	signal(SIGUSR2, signal_received);
+	if (argv[2][0] == '\0')
+		ft_exit_program("Error: empty message", 1);
+	signal(SIGUSR1, handler);
+	signal(SIGUSR2, handler);
 	send_msg(ft_atoi(argv[1]), argv[2]);
 	while (1)
 		pause();
-	return (0);
 }

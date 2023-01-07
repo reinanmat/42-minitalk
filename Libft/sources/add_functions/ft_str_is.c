@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_str_is_num.c                                    :+:      :+:    :+:   */
+/*   ft_str_is.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: revieira <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/05 17:55:03 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/06 13:50:00 by revieira         ###   ########.fr       */
+/*   Created: 2023/01/07 12:56:38 by revieira          #+#    #+#             */
+/*   Updated: 2023/01/07 12:57:12 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_str_is_num(char *str)
+int	ft_str_is(char *str, int (*f)(int))
 {
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (!ft_isdigit(str[i]))
+		if (!f(str[i]))
 			return (0);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: revieira <revieira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/02 10:35:45 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/06 13:49:48 by revieira         ###   ########.fr       */
+/*   Updated: 2023/01/07 12:57:10 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,6 @@ int		ft_putnbr_pos(unsigned long long n, char *base);
 
 //ADD_FUNCTIONS
 void	ft_exit_program(char *msg, int exit_code);
-int		ft_str_is_num(char *str);
+int		ft_str_is(char *str, int (*f)(int));
 
 #endif
