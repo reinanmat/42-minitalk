@@ -6,7 +6,7 @@
 /*   By: revieira <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 18:00:50 by revieira          #+#    #+#             */
-/*   Updated: 2023/01/07 16:10:39 by revieira         ###   ########.fr       */
+/*   Updated: 2023/03/03 16:45:17 by revieira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ void	signal_handler(int sig, siginfo_t *info, void *context)
 	static char	c = 0;
 	static char	*msg = NULL;
 
-	context = NULL;
 	if (!pid)
 		pid = info->si_pid;
 	if (sig == SIGUSR2)
@@ -94,6 +93,8 @@ void	signal_handler(int sig, siginfo_t *info, void *context)
 		c = 0;
 		bits_received = 0;
 	}
+	if (context)
+		context = NULL;
 }
 
 int	main(void)
